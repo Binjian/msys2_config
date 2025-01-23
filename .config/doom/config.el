@@ -39,8 +39,11 @@
 ;;(setq doom-font (font-spec :family "Source Han Sans" :weight 'medium :size 13.0))
 
 (setq doom-font (font-spec :family "JetBrainsMono NFM" :size 14 :weight 'medium)
-      doom-variable-pitch-font (font-spec :family "Sarasa Term SC Nerd" :size 14))
+      doom-serif-font doom-font
+      doom-symbol-font (font-spec :family "MesloLGS Nerd Font")
+      doom-variable-pitch-font (font-spec :family "Sarasa Term SC Nerd" :size 14 :weight 'extra-bold))
 
+(setq use-default-font-for-symbolsi nil)
 ;;(setq doom-font (font-spec :family "JetBrains Mono" :size 14 :weight 'medium)
 ;;         doom-variable-pitch-font (font-spec :family "Noto Sans" :size 14))
 
@@ -53,7 +56,14 @@
 (defun my-cjk-font()
   (dolist (charset '(kana han cjk-misc symbol bopomofo))
     (set-fontset-font t charset (font-spec :family "LXGW Wenkai Mono"))))
-(add-hook 'after-setting-font-hook #'my-cjk-font)
+;;(add-hook 'after-setting-font-hook #'my-cjk-font)
+
+(add-hook! 'after-setting-font-hook
+           #'my-cjk-font
+           (set-fontset-font t 'latin (font-spec :family "JetBrainsMono NFM"))
+           (set-fontset-font t 'symbol (font-spec :family "MesloLGS Nerd Font"))
+           (set-fontset-font t 'mathematical (font-spec :family "MesloLGS Nerd Font"))
+           (set-fontset-font t 'emoji (font-spec :family "MesloLGS Nerd Font")))
 
 ;;(setq doom-font (font-spec :family "Sarasa Fixed SC" :size 12 :weight 'medium)
 ;;      doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size 12))
