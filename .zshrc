@@ -112,7 +112,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 #alias sudo='"$PROGRAMFILES/gsudo/Current/gsudo.exe"'
-
+source ./.private_keys.zshrc
 export PATH="$PATH:/c/Users/xinbinjian.sh/scoop/shims:$HOME/.config/emacs/bin:/c/msys64/ucrt64/bin:$HOME/scoop/apps/nodejs/23.1.0"
 export PATH="$PATH:/d/miniforge3/condabin"
 export PATH="$PATH:/c/Program Files (x86)/Windows Media Player"
