@@ -38,12 +38,17 @@
 ;;
 ;;(setq doom-font (font-spec :family "Source Han Sans" :weight 'medium :size 13.0))
 
-(setq doom-font (font-spec :family "JetBrainsMono NFM" :size 14 :weight 'medium)
-      doom-serif-font doom-font
-      doom-symbol-font (font-spec :family "MesloLGS Nerd Font")
-      doom-variable-pitch-font (font-spec :family "Sarasa Term SC Nerd" :size 14 :weight 'extra-bold))
+;;(setq doom-font (font-spec :family "JetBrainsMono NFM" :size 14 :weight 'medium)
+;;      doom-serif-font doom-font
+;;      doom-symbol-font (font-spec :family "MesloLGS Nerd Font")
+;;      doom-variable-pitch-font (font-spec :family "Sarasa Term SC Nerd" :size 14 :weight 'extra-bold))
 
-(setq use-default-font-for-symbolsi nil)
+(setq doom-font (font-spec :family "Iosevka NF" :size 14 :weight 'medium)
+      doom-serif-font doom-font
+      doom-symbol-font (font-spec :family "Iosevka NF")
+      doom-variable-pitch-font (font-spec :family "Iosevka NF" :size 14 :weight 'extra-bold))
+
+(setq use-default-font-for-symbolsi nil) 
 ;;(setq doom-font (font-spec :family "JetBrains Mono" :size 14 :weight 'medium)
 ;;         doom-variable-pitch-font (font-spec :family "Noto Sans" :size 14))
 
@@ -54,16 +59,19 @@
 ;;      doom-variable-pitch-font (font-spec :family "Sarasa Term SC Nerd" :size 13))
 
 (defun my-cjk-font()
-  (dolist (charset '(kana han cjk-misc symbol bopomofo))
-    (set-fontset-font t charset (font-spec :family "LXGW Wenkai Mono"))))
+  (dolist (charset '(kana han cjk-misc hangul kanbun symbol bopomofo))
+    (set-fontset-font t charset (font-spec :family "LXGW Wenkai Mono")))
+  (dolist (charset '((#x2018 . #x2019)      ;; Curly single quotes "‘’"
+                     (#x201c . #x201d)))))  ;; Curly double quotes "“”"
+
 ;;(add-hook 'after-setting-font-hook #'my-cjk-font)
 
 (add-hook! 'after-setting-font-hook
            #'my-cjk-font
-           (set-fontset-font t 'latin (font-spec :family "JetBrainsMono NFM"))
-           (set-fontset-font t 'symbol (font-spec :family "MesloLGS Nerd Font"))
-           (set-fontset-font t 'mathematical (font-spec :family "MesloLGS Nerd Font"))
-           (set-fontset-font t 'emoji (font-spec :family "MesloLGS Nerd Font")))
+           (set-fontset-font t 'latin (font-spec :family "Iosevka NF"))
+           (set-fontset-font t 'symbol (font-spec :family "Iosevka NF"))
+           (set-fontset-font t 'mathematical (font-spec :family "Iosevka NF"))
+           (set-fontset-font t 'emoji (font-spec :family "Iosevka NF")))
 
 ;;(setq doom-font (font-spec :family "Sarasa Fixed SC" :size 12 :weight 'medium)
 ;;      doom-variable-pitch-font (font-spec :family "Sarasa Gothic SC" :size 12))
@@ -116,6 +124,29 @@ _h_ decrease width    _l_ increase width
 ;;  :if (display-graphic-p))
 
 (setq persp-emacsclient-init-frame-behaviour-override "main")
+
+;; Command to list ignored files:
+;; $ git ls-files --others --ignored --exclude-standard --directory
+(defun magit-ignored-files ()
+  (magit-git-items "ls-files" "--others" "--ignored" "--exclude-standard" "-z" "--directory"))
+
+(defun magit-insert-ignored-files ()
+  (-when-let (files (magit-ignored-files))
+    (magit-insert-section (ignored)
+      (magit-insert-heading "Ignored files:")
+      (magit-insert-un/tracked-files-1 files nil)
+      (insert ?\n))))
+
+;;(add-hook 'magit-status-sections-hook #'magit-insert-status-headers)
+;;(add-hook 'magit-status-sections-hook #'magit-insert-ignored-files) ;; enable ignored files in status section
+;;(add-hook 'magit-status-headers-hook #'magit-insert-ignored-files) ;; enable ignored files in status section
+(setq magit-status-headers-hook '(magit-insert-error-header
+                                  magit-insert-diff-filter-header
+                                  magit-insert-head-branch-header
+                                  magit-insert-upstream-branch-header
+                                  magit-insert-push-branch-header
+                                  magit-insert-tags-header
+                                  magit-insert-ignored-files))
 
 ;; (use-package pyim
 ;;   :ensure nil
@@ -387,6 +418,7 @@ _h_ decrease width    _l_ increase width
         org-roam-completion-everywhere t
         org-roam-ui-open-on-start t))
 (setq org-superstar-headline-bullets-list '("⁖" "◉" "○" "✸" "✿"))
+(setq org-superstar-item-bullet-alist '((?- . "•") (?+ . "☞") (?* . "★")))
 
 ;;(use-package! nov
 ;;  :mode ("\\.epub\\'" . nov-mode)
@@ -719,7 +751,8 @@ _h_ decrease width    _l_ increase width
          (getenv "NODE_PATH")
          )
         )
-;;(setq ob-mermaid-cli-path ("/d/programme/node_modules/.bin/mmdc"))
+
+(setq ob-mermaid-cli-path "/c/msys64/ucrt64/bin/mmdc")
 
 
 (setq org-excalidraw-directory "d:/05-doc/org/excalidraw")
@@ -925,4 +958,3 @@ _h_ decrease width    _l_ increase width
 ;;          '(unbind-key "C-c h" jupyter-org-interaction-mode-map)))
 ;;
 (setq org-ai-openai-api-token (getenv "OPENAI_ORG_AI_KEY"))
-
